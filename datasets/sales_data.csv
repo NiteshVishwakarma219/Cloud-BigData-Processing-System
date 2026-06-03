@@ -1,0 +1,11 @@
+OrderID,CustomerID,Product,Category,Amount,Region
+1001,C001,Laptop,Electronics,50000,North
+1002,C002,Phone,Electronics,20000,South
+1003,C003,TV,Electronics,30000,East
+1004,C004,Laptop,Electronics,55000,West
+1005,C005,Phone,Electronics,25000,North
+1006,C006,TV,Electronics,35000,South
+1007,C007,Laptop,Electronics,65000,North
+1008,C008,Phone,Electronics,18000,East
+1009,C009,TV,Electronics,40000,West
+1010,C010,Laptop,Electronics,70000,South
