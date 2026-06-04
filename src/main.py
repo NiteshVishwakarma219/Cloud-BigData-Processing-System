@@ -1,33 +1,33 @@
-from data_ingestion import load_data
-from data_filtering import filter_sales
-from data_transformation import add_gst
-from data_processing import process_sales
-from store_to_rds import store_data
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 
+spark = SparkSession.builder \
+    .appName("TCS-BigData-Project") \
+    .getOrCreate()
 
-def main():
+# Read from CSV (uploaded file)
+df = spark.read.csv("sales_data.csv", header=True, inferSchema=True)
 
-    print("\n========== BIG DATA PROJECT ==========")
+df.show()
 
-    # Step 1
-    spark, df = load_data()
+# Filter
+high_sales = df.filter(df.Amount > 30000)
+high_sales.show()
 
-    # Step 2
-    high_sales = filter_sales(df)
+# Transformation
+df2 = df.withColumn("GST", col("Amount") * 0.18)
+df2.show()
 
-    # Step 3
-    transformed_df = add_gst(df)
+# Aggregation
+result = df.groupBy("Region").sum("Amount")
+result.show()
 
-    # Step 4
-    result = process_sales(transformed_df)
-
-    # Step 5
-    store_data(result)
-
-    print("\n========== PIPELINE COMPLETED ==========")
-
-    spark.stop()
-
-
-if __name__ == "__main__":
-    main()
+# Write to RDS
+result.write \
+.format("jdbc") \
+.option("url", "jdbc:mysql://RDS-ENDPOINT:3306/bigdata_db") \
+.option("dbtable", "sales_summary") \
+.option("user", "admin") \
+.option("password", "YOUR_PASSWORD") \
+.mode("append") \
+.save()
