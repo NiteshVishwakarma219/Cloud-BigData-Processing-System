@@ -6,7 +6,7 @@ spark = SparkSession.builder \
     .getOrCreate()
 
 # Read from CSV (uploaded file)
-df = spark.read.csv("/datasets/sales_data.csv", header=True, inferSchema=True)
+df = spark.read.csv("datasets/sales_data.csv", header=True, inferSchema=True)
 
 df.show()
 
