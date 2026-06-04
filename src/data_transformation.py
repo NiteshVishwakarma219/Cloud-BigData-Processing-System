@@ -1,13 +1,22 @@
+from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 
-def add_gst(df):
+# Create Spark Session
+spark = SparkSession.builder \
+    .appName("DataTransformationJob") \
+    .getOrCreate()
 
-    transformed_df = df.withColumn(
-        "GST",
-        col("Amount") * 0.18
-    )
+# Load dataset
+df = spark.read.csv("sales_data.csv", header=True, inferSchema=True)
 
-    print("\n===== GST ADDED =====")
-    transformed_df.show()
+print("Original Data:")
+df.show()
 
-    return transformed_df
+# Data Transformation: Add GST column (18%)
+df_transformed = df.withColumn("GST", col("Amount") * 0.18)
+
+print("Data after GST Transformation:")
+df_transformed.show()
+
+# Optional: Save transformed data (for proof)
+df_transformed.write.mode("overwrite").csv("output/transformed_data")

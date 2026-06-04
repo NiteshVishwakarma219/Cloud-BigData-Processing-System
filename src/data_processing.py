@@ -1,9 +1,14 @@
-def process_sales(df):
+from pyspark.sql import SparkSession
 
-    result = df.groupBy("Region") \
-               .sum("Amount")
+spark = SparkSession.builder \
+    .appName("BigDataProcessing") \
+    .getOrCreate()
 
-    print("\n===== REGION SALES SUMMARY =====")
-    result.show()
+# STEP 1: LOAD DATA
+df = spark.read.csv("sales_data.csv", header=True, inferSchema=True)
 
-    return result
+# STEP 2: PROCESS DATA
+result = df.groupBy("Region").sum("Amount")
+
+# STEP 3: SHOW OUTPUT
+result.show()
